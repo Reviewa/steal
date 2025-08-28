@@ -13,8 +13,8 @@ jobs:
     env:
       # 映射关系：folder,上游repo,上游分支,目标repo,目标分支
       FOLDER_UPSTREAM_REPO: |
-        自己目录名称,https://github.com/上游路径.git,main,自己的库路径,main
-        cs1,https://github.com/blackmatrix7/ios_rule_script.git,master,coco-coc/gg,main
+        baby,https://github.com/Yu9191/Rewrite.git,main,Reviewa/steal,main
+        bm7,https://github.com/blackmatrix7/ios_rule_script.git,master,coco-coc/gg,main
 
     steps:
       - name: 检出目标仓库
