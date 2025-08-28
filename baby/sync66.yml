@@ -1,0 +1,61 @@
+name: Multi-Folder Upstream Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 每天 UTC 0 点运行
+  workflow_dispatch:       # 允许手动触发
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 授予写入权限
+    env:
+      # 映射关系：folder,上游repo,上游分支,目标repo,目标分支
+      FOLDER_UPSTREAM_REPO: |
+        自己目录名称,https://github.com/上游路径.git,main,自己的库路径,main
+        cs1,https://github.com/blackmatrix7/ios_rule_script.git,master,coco-coc/gg,main
+
+    steps:
+      - name: 检出目标仓库
+        uses: actions/checkout@v3
+
+      - name: 配置 Git 用户
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+      - name: 同步上游内容
+        run: |
+          echo "$FOLDER_UPSTREAM_REPO" | grep . | while IFS=',' read -r folder upstream_repo upstream_branch target_repo target_branch; do
+            echo "🔄 同步 $folder ..."
+            
+            # 1. 克隆上游仓库到临时目录
+            echo "📥 克隆上游仓库到临时目录..."
+            temp_dir=$(mktemp -d)
+            git clone --depth 1 --branch "$upstream_branch" "$upstream_repo" "$temp_dir"
+            
+            # 2. 使用 rsync 同步文件，只新增和修改，忽略删除
+            echo "🚚 使用 rsync 同步文件，忽略删除..."
+            mkdir -p "$folder"
+            # 核心命令：-av 只更新变化的文件，--exclude='.git/' 忽略 .git 目录
+            rsync -av --exclude='.git/' "$temp_dir"/ "$folder"/
+
+            # 3. 清理临时目录
+            rm -rf "$temp_dir"
+            
+            echo "✅ 文件夹 $folder 内容已更新"
+
+          done
+      
+      - name: 提交并推送更改
+        run: |
+          # 检查是否有文件改动，如果有则推送
+          if git status --porcelain | grep .; then
+            git add .
+            git commit -m "🔄 同步上游更新" || echo "ℹ️ 无新提交"
+            git push origin "$GITHUB_REF"
+            echo "✅ 所有更改已推送到目标仓库"
+          else
+            echo "ℹ️ 没有变化，跳过推送"
+          fi
