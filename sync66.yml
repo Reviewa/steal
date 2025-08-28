@@ -1,0 +1,71 @@
+name: Multi-Folder Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 0 点自动运行
+  workflow_dispatch:
+
+jobs:
+  sync-folders:
+    runs-on: ubuntu-latest
+    env:
+      # 配置每个文件夹的目标仓库和分支: 文件夹,仓库,分支
+      FOLDER_REPO: |
+        folderA,用户名/repoA,main
+        folderB,用户名/repoB,main
+        folderC,用户名/repoC,main
+
+      # 上游仓库地址和分支（如果有上游需要同步）
+      UPSTREAM_REPO: https://github.com/原作者用户名/原项目名.git
+      UPSTREAM_BRANCH: main
+
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: 配置 git 用户
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 获取上游最新内容
+        run: |
+          git remote add upstream $UPSTREAM_REPO || echo "ℹ️ 上游已存在"
+          git fetch upstream
+
+      - name: 同步每个文件夹
+        run: |
+          while IFS=',' read -r folder repo branch; do
+            echo "🔄 开始同步 $folder 到仓库 $repo 分支 $branch"
+
+            cd $folder || continue
+
+            # 初始化 git（如果没有）
+            if [ ! -d .git ]; then
+              git init
+              git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$repo.git
+            fi
+
+            # 同步上游（忽略删除）
+            git checkout -B $branch || git checkout $branch
+            git merge --strategy-option ours upstream/$UPSTREAM_BRANCH || true
+            git checkout upstream/$UPSTREAM_BRANCH -- .
+
+            # 统计新增和修改文件
+            git add .
+            ADDED=$(git diff --cached --name-status | grep "^A" | wc -l)
+            MODIFIED=$(git diff --cached --name-status | grep "^M" | wc -l)
+
+            if [ "$ADDED" -eq 0 ] && [ "$MODIFIED" -eq 0 ]; then
+              echo "ℹ️ $folder 没有新增或修改文件，跳过提交"
+            else
+              echo "📊 $folder 变更统计：新增 $ADDED 个，修改 $MODIFIED 个"
+              git commit -m "🔄 同步 $folder（忽略删除）"
+              git push -u origin $branch
+              echo "✅ $folder 同步完成"
+            fi
+
+            cd ..
+          done <<< "$FOLDER_REPO"
