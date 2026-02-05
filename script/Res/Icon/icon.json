@@ -1,7 +1,7 @@
 {
   "name": "All Icons",
   "description": "collected by zirawell",
-  "time": "2026-02-01",
+  "time": "2026-02-05",
   "icons": [
     {
       "name": "shihuo",
@@ -646,6 +646,10 @@
     {
       "name": "mcloud",
       "url": "https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Icon/App/mcloud.png"
+    },
+    {
+      "name": "flymodem",
+      "url": "https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Icon/App/flymodem.png"
     },
     {
       "name": "laifeng",
@@ -1522,6 +1526,10 @@
     {
       "name": "bestv",
       "url": "https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Icon/App/bestv.png"
+    },
+    {
+      "name": "catchtable",
+      "url": "https://raw.githubusercontent.com/zirawell/R-Store/main/Res/Icon/App/catchtable.png"
     },
     {
       "name": "damai",
