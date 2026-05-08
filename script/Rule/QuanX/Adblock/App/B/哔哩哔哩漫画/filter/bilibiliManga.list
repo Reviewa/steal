@@ -1,2 +1,7 @@
 # > 哔哩哔哩漫画 - BILIBILIMANGA
 host, httpdns.bilivideo.com, reject
+ip-cidr, 203.119.204.80/32, reject
+ip-cidr, 203.119.206.8/32, reject
+ip-cidr, 203.119.206.9/32, reject
+ip-cidr, 203.119.238.194/32, reject
+ip-cidr, 203.119.238.240/32, reject
