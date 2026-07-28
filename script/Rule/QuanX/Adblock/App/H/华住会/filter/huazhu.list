@@ -1,2 +1,2 @@
 # > 华住会 - HUAZHU
-host-suffix, xinstall.top, reject
+host, apm-api.huazhu.com, reject
