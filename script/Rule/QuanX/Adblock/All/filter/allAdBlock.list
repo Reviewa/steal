@@ -5,7 +5,7 @@
 #!homepage=https://github.com/zirawell/R-Store
 #!raw-url=https://raw.githubusercontent.com/zirawell/R-Store/main/Rule/QuanX/Adblock/All/filter/allAdBlock.list
 #!tg-group=https://t.me/RStoreCom
-#!date=2026-07-28 08:24:55
+#!date=2026-08-27 10:43:01
 #!proxy-select=reject
 #!---------------------------------------------------------------------------------------------------------------
 ip-cidr, 1.202.85.193/32, reject
@@ -250,7 +250,6 @@ host, content-open.douyin.com, reject
 host, corp.meitu.com, reject
 host, counter.kingsoft.com, reject
 host, counter.ksosoft.com, reject
-host, cpush.ctrip.com, reject
 host, cpush.trip.com, reject
 host, cr-status.iqiyi.com, reject
 host, crash2.zhihu.com, reject
@@ -727,6 +726,7 @@ host-suffix, app-measurement.com, reject
 host-suffix, app.ibaiducdn.com, reject
 host-suffix, appc.baidu.com, reject
 host-suffix, appier.net, reject
+host-suffix, applog.uc.cn, reject
 host-suffix, applovin.com, reject
 host-suffix, applvn.com, reject
 host-suffix, apppv.zol.com.cn, reject
